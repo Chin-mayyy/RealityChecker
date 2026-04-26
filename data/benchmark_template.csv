@@ -1,0 +1,17 @@
+video_url,domain,manual_label,manual_reason
+https://www.youtube.com/watch?v=Tn6-PIqc4UM,react,good,Modern React tutorial with hooks and up-to-date patterns
+https://www.youtube.com/watch?v=SqcY0GlETPk,react,good,Traversy Media React crash course with modern practices
+https://www.youtube.com/watch?v=w7ejDZ8SWv8,react,good,Fireship React in 100 seconds — concise and current
+https://www.youtube.com/watch?v=DLX62G4lcDr,node,outdated,Older Node.js tutorial potentially using deprecated APIs
+https://www.youtube.com/watch?v=Oe421EPjeBE,node,good,Node.js 2024+ tutorial covering modern patterns
+https://www.youtube.com/watch?v=rfscVS0vtbw,python,good,FreeCodeCamp massive Python course — foundational and evergreen
+https://www.youtube.com/watch?v=XKHEtdqhLK8,python,good,CS50 Python intro — high credibility educational content
+https://www.youtube.com/watch?v=_uQrJ0TkZlc,python,outdated,Old Python 2 tutorial with deprecated patterns
+https://www.youtube.com/watch?v=pBy1zgt0jpc,devops,good,Docker curriculum covering modern container practices
+https://www.youtube.com/watch?v=fqMOX6JJhGo,devops,good,Kubernetes tutorial with current cloud-native patterns
+https://www.youtube.com/watch?v=jS4aFq5-91M,javascript_typescript,good,Traversy Media JS crash course — well-structured beginner content
+https://www.youtube.com/watch?v=1RsGMbR5v6s,javascript_typescript,good,Fireship TypeScript tutorial — modern TS patterns
+https://www.youtube.com/watch?v=PkZNo7MFNFg,javascript_typescript,outdated,Old JS tutorial potentially referencing deprecated APIs
+https://www.youtube.com/watch?v=HGT2s8gJMDg,java,good,CS50 Java intro — credible educational source
+https://www.youtube.com/watch?v=grEKMHGYFnA,java,good,Java multi-threading tutorial with current best practices
+https://www.youtube.com/watch?v=3qWX2gFuvtY,react,risky,Low-view React tutorial from unknown channel with minimal engagement
