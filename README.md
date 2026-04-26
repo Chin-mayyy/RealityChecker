@@ -229,6 +229,60 @@ youtube_video_raw_{id} ──→ feature_snapshot_{id}_{ts} ──→ video_scor
 tech_freshness_rules_{domain} ───────┘
 ```
 
+### How RealityChecker Uses OpenMetadata
+
+OpenMetadata is used as the governance and observability layer around the scoring pipeline.
+
+- **Infrastructure bootstrap (`POST /openmetadata/init`)**
+  - Calls `ensure_infrastructure()` to create/ensure:
+    - database service `realitychecker`
+    - database `youtube_analytics`
+    - schema `default`
+    - pipeline service `realitychecker_pipeline_service`
+    - pipeline `realitychecker_scoring`
+    - governance classification + tags
+  - Calls `ingest_freshness_rules()` to register `tech_freshness_rules_{domain}` tables for each rule pack (React, Node, Python, Java, JS/TS, DevOps).
+
+- **Per-analysis metadata ingestion (`POST /analyze`)**
+  - On each successful analysis, `ingest_analysis(...)` creates three table entities:
+    - `youtube_video_raw_{video_id}`
+    - `feature_snapshot_{video_id}_{timestamp}`
+    - `video_scorecard_{video_id}_{timestamp}`
+  - Adds lineage edges:
+    - `youtube_video_raw_* -> feature_snapshot_*`
+    - `feature_snapshot_* -> video_scorecard_*`
+    - `tech_freshness_rules_{domain} -> feature_snapshot_*`
+  - Returns ingestion status in API response as `openmetadata` when ingestion succeeds.
+
+- **Governance tagging in practice**
+  - `video_scorecard_*` gets tags derived from score outcomes and flags (quality tier, outdated risk, low confidence, low engagement, low credibility, beginner-friendly).
+  - Additional conditional tags are applied for `evergreen`, `recentContent`, `highEngagement`, and `spamHeavy`.
+
+- **Data quality and run observability**
+  - Creates scorecard-linked data quality test cases via `/dataQuality/testCases` for key thresholds:
+    - overall score
+    - confidence
+    - tech freshness
+    - recency
+    - creator credibility
+    - engagement quality
+    - sentiment quality
+  - Logs pipeline runs via `/pipelineStatus` with start/end timestamps and success/failure state (`log_pipeline_run(...)`).
+
+- **Health and stats endpoints**
+  - `GET /health/openmetadata` validates connectivity/version (`/system/version`).
+  - `GET /openmetadata/stats` returns connectivity plus table/database summary.
+
+- **What is and is not persisted**
+  - The integration persists metadata entities, lineage, tags, and data quality test definitions.
+  - It does not currently write full row-level analysis records into OpenMetadata tables; analysis values are represented in table/column metadata and descriptions.
+
+- **Graceful behavior**
+  - If `OPENMETADATA_HOST` or `OPENMETADATA_TOKEN` is missing, backend scoring still works and OpenMetadata operations are skipped.
+  - Ingestion failures are non-blocking for `/analyze` responses.
+
+In short, OpenMetadata is used for lineage, governance classification, data quality checks, and pipeline run visibility around every scoring decision.
+
 ### Entity Schema
 
 **youtube_video_raw**: Video ID, title, channel, upload date, view/like/comment counts, channel followers
@@ -325,3 +379,8 @@ while IFS=, read -r url domain label reason; do
     -d "{\"url\": \"$url\"}" | python3 -m json.tool
 done < data/benchmark_template.csv
 ```
+
+## AI Assistance Declaration
+
+This project was developed using OpenCode with GLM 5.1 and GPT-5.3 Codex for coding support, with limited assistance for ideation and planning.
+All architecture, implementation decisions, and final validation were reviewed and finalized by the project author.
